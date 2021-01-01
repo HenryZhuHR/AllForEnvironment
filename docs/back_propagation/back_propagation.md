@@ -1,6 +1,6 @@
-# Back Propagation Neural Networks
-- [Back Propagation Neural Networks](#back-propagation-neural-networks)
-- [神经元模型](#神经元模型)
+# Content of Back Propagation Neural Networks
+- [Content of Back Propagation Neural Networks](#content-of-back-propagation-neural-networks)
+- [感知器（神经元）](#感知器神经元)
   - [M-P 神经元模型](#m-p-神经元模型)
     - [激活函数](#激活函数)
   - [感知机与多层网络](#感知机与多层网络)
@@ -15,33 +15,42 @@
 - [例子](#例子)
   - [python tensorflow实现](#python-tensorflow实现)
 
-<!-- 
-171 186 123
-68775018
+
+阅读建议：
+
+
+<!--
 老
 202.114.107.171
 202.114.107.186
 202.114.107.123
 新
-202.114.107.210 
+202.114.107.210
+
+https://www.zybuluo.com/hanbingtao/note/433855
 -->
 
 
-# 神经元模型
+# 感知器（神经元）
+**感知器**，也叫**神经元**，是神经网络的组成单元
 ## M-P 神经元模型
 基本神经元模型中，神经元接收到来自$n$个其他神经元传递过来的输入信号，这些输入信号通过带权重的连接(connection)进行传递  
 神经元接收到的总输入值将与神经元的阈值进行比较，然后通过 **激活函数（activation function）** 处理以产生神经元的输出
 
 - 神经元模型如下
+![Neural model](img/neuron.png)
+<!-- <div align="center"><img src="img/neuron.png" width=60% /></div> -->
 
-<div align="center"><img src="img/neuron.png" width=60% /></div>
+包括了如下的组成部分
 
-$x_i$ 是来自第 $i$ 个神经元的输入，每个神经元会接收到 $n$ 个神经元的输入。每个输入值会占据一定的权重
-$$\begin{aligned}
-  \omega_i x_i
-\end{aligned}$$
+- **输入权值** $x_i$ ，包括了其**权重** $\omega_i$ 和**偏置项** $b$
+- **激活函数** $f$
+- **输出权值** $y$
 
-所有输入 ($n$ 个输入) 加权后进行累加
+
+神经元的工作过程如下：
+
+$x_i$ 是来自第 $i$ 个神经元的输入，每个神经元会接收到 $n$ 个神经元的输入。每个输入值会占据一定的权重 $\omega_i x_i$ 所有输入 ($n$ 个输入) 加权后进行累加
 $$\begin{aligned}
   \sum_{i=1}^{n}\omega_i x_i=\omega_1 x_1+ \omega_2 x_2+ ...+ \omega_n x_n
 \end{aligned}$$
@@ -125,11 +134,73 @@ def sigmoid(x):
     return 1./(1.+np.exp(-x))
 ```
 
+------
+
+看完上面的内容可能会很懵
+:astonished:
+
+那我们举个例子，也是比较经典的例子：用感知器实现逻辑 `and` 的操作。(其余数字逻辑/布尔运算也类似)
+$$\begin{aligned}
+    Y=X_1 X_2
+\end{aligned}$$
+真值表如下：
+| $x_1$ | $x_2$ |  $y$  |
+| :---: | :---: | :---: |
+|   0   |   0   |   0   |
+|   0   |   1   |   0   |
+|   1   |   0   |   0   |
+|   1   |   1   |   1   |
+
+> 在编程语言中
+> ```c
+> 0 = false
+> 1 = true
+> ```
+
+这时候我们构建一改神经网络如下：
+
+![and 逻辑的网络结构](@todo: `and` 网络的图片)
+
+假定输入为 $x_1=0,x_2=1,b=-0.8$ ，激活函数选择理想的阶跃函数
+$$\begin{aligned}
+  f(x)=sgn(x)=
+  \begin{cases}
+    1,& x\geq0 \\
+    0,& x<0
+  \end{cases}
+\end{aligned}$$
+
+根据输出公式：
+$$\begin{aligned}
+  y &=f(W \cdot X+b) \\
+    &=f(\omega_1 x_1+\omega_2 x_2 +b) \\
+    &=f(0.5 \times 0+0.5 \times 1 -0.8) \\
+    &=f(-0.3) \\
+    &=0
+\end{aligned}$$
+
+| $\omega_1 x_1$ | $\omega_2 x_2$ |  $b$  | $\omega_1 x_1+\omega_2 x_2 +b$ | $f(\omega_1 x_1+\omega_2 x_2 +b)$ |
+| :------------: | :------------: | :---: | :----------------------------: | :-------------------------------: |
+|       0        |       0        | -0.8  |              -0.8              |                 0                 |
+|       0        |      0.5       | -0.8  |              -0.3              |                 0                 |
+|      0.5       |       0        | -0.8  |              -0.3              |                 0                 |
+|      0.5       |      0.5       | -0.8  |              0.2               |                 1                 |
+
+通过这个简单的例子，我们可以看出，感知器是可以解决**布尔运算**的。这也是感知器最简单的应用之一了。
+
+然而，感知器却不能实现异或运算。这是因为上面的计算都是线性运算
+
+![and 运算的坐标划分](@todo: `and` 坐标轴划分的图片)
+
+
+
 ## 感知机与多层网络
 感知机 (Perceptron) 由两层神经元组成
 
 
 # 神经网络
+在人工智能领域中，有一个很重要的方法叫机器学习，而在机器学习中有一种更加重要的算法，叫深度学习。
+
 ## 任务描述
 如下图，我们已知四个数据点(1,1)(-1,1)(-1,-1)(1,-1)，这四个点分别对应I~IV象限，如果这时候给我们一个新的坐标点（比如(2,2)），那么它应该属于哪个象限呢？（没错，当然是第I象限，但我们的任务是要让机器知道）
 
@@ -182,6 +253,8 @@ todo
 <div align="center"><img src="img/神经网络-两层+激活函数.png" width=60% /></div>  
 
 <div align="center"><img src="img/神经网络-两层-扩展.png" width=80% /></div>   
+
+激活层的存在
 
 # BP神经网络原理
 
