@@ -1,5 +1,6 @@
 # AllForEnvironment
 - [AllForEnvironment](#allforenvironment)
-- [数据集](#数据集)
+- [解题思路](#解题思路)
 
-# 数据集
+# 解题思路
+[垃圾分类解题思路](docs/AI-Trash/sln.md)
