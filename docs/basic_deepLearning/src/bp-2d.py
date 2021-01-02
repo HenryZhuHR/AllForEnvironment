@@ -11,21 +11,23 @@ class BPNetwork(object):
         self.nHidden = nHidden  # num of hidden node
         self.nOutput = nOutput  # num of output node
         self.lr = lr  # learning rate
+        print("-- nInput ",self.nInput)
+        print("-- nHidden ",self.nHidden)
+        print("-- nOutput ",self.nOutput)
+        print("-- lr ",self.lr,self.lr.shape)
 
-        # mnist shape: nInput=2,nHidden=5, nOutput=4
+        # mnist shape: nInput=4,nHidden=5, nOutput=4
         # W1.shape=(5,2)
         self.W1 = np.random.normal(
             loc=0.0,  # μ
             scale=self.nHidden**(-0.5),  # σ
             size=(self.nHidden, self.nInput)  # size
         )
-        pprint("------ W1 ------")
-        pprint(self.W1)
+        print("-- W1.shape",self.W1.shape)
         # W2.shape=(4,5)
         self.W2 = np.random.normal(0.0, self.nOutput**(-0.5),
                                    (self.nOutput, self.nHidden))
-        pprint("------ W2 ------")
-        pprint(self.W2)
+        print("-- W2 shape",self.W2.shape)
 
         # activation: sigmoid
         self.activation = (lambda x: 1 / (1 + np.exp(-x)))  # sigmoid
@@ -42,7 +44,7 @@ class BPNetwork(object):
         # Forward propagation
         hid_ints = np.dot(self.W1, inputs)  # W1X1, hid_ints.shape=(5,1)
         hid_outs = self.activation(hid_ints)  # f(W1X1), hid_outs.shape=(5,1)
-        out_outs =np.dot(self.W2, hid_outs)  # f(W1X1)X2, out_ints.shape=(4,1)
+        out_outs = np.dot(self.W2, hid_outs)  # f(W1X1)X2, out_ints.shape=(4,1)
 
         # Back propagation (!! too difficult !!)
         loss = (out_outs - groundtruth)**2  # loss.shape=(4,1)
@@ -68,14 +70,17 @@ class BPNetwork(object):
 
 
 if __name__ == "__main__":
-    inputs_org = [-1,0,1]  # input
-    groundtruth_org = [20,13,23,44]  # label
+    inputs_org = [[0,0],[0,1],[1,0],[1,1]]  # input
+    groundtruth_org = [0,0,0,1]  # label
 
-    network = BPNetwork(nInput=len(inputs_org), nHidden=10, nOutput=len(groundtruth_org), lr=0.001)
+    network = BPNetwork(nInput=len(inputs_org),
+                        nHidden=10,
+                        nOutput=len(groundtruth_org),
+                        lr=0.001)
 
     epoch = 0
-    epoch_list=[]
-    loss_list=[]
+    epoch_list = []
+    loss_list = []
     while (1):
         network.train(inputs_org, groundtruth_org)
         out = network.inference(inputs_org)
@@ -88,20 +93,18 @@ if __name__ == "__main__":
                 epoch, "  -- out: %8f %8f %8f %8f" %
                 (out[0][0], out[1][0], out[2][0], out[3][0]), "\t-- loss: ",
                 (loss))
-        
-        epoch += 1        
+
+        epoch += 1
         if (loss < 1e-5):
             break
-        
 
     print(" ------  Train result ------")
-    print("  epoch ",epoch)
-    print("  loss ",loss_list[-1])
+    print("  epoch ", epoch)
+    print("  loss ", loss_list[-1])
     out = network.inference(inputs_org)
-    print("  out   %8f %8f %8f %8f" %(out[0][0], out[1][0], out[2][0], out[3][0]))
+    print("  out   %8f %8f %8f %8f" %
+          (out[0][0], out[1][0], out[2][0], out[3][0]))
 
-    from matplotlib import pyplot as plt 
-    plt.plot(epoch_list,loss_list) 
+    from matplotlib import pyplot as plt
+    plt.plot(epoch_list, loss_list)
     plt.show()
-
-    
