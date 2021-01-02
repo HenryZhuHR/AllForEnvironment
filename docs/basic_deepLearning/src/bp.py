@@ -42,8 +42,7 @@ class BPNetwork(object):
         # Forward propagation
         hid_ints = np.dot(self.W1, inputs)  # W1X1, hid_ints.shape=(5,1)
         hid_outs = self.activation(hid_ints)  # f(W1X1), hid_outs.shape=(5,1)
-        out_ints = np.dot(self.W2, hid_outs)  # f(W1X1)X2, out_ints.shape=(4,1)
-        out_outs = out_ints  # out_outs.shape=(4,1)
+        out_outs = np.dot(self.W2, hid_outs)  # f(W1X1)X2, out_ints.shape=(4,1)
 
         # Back propagation (!! too difficult !!)
         loss = (out_outs - groundtruth)**2  # loss.shape=(4,1)
@@ -60,8 +59,7 @@ class BPNetwork(object):
         hid_ints = np.dot(self.W1, inputs)
         hid_outs = self.activation(hid_ints)
 
-        out_ints = np.dot(self.W2, hid_outs)
-        out_outs = out_ints
+        out_outs = np.dot(self.W2, hid_outs)
 
         return out_outs
 
@@ -70,14 +68,17 @@ class BPNetwork(object):
 
 
 if __name__ == "__main__":
-    inputs_org = [-1,0,1]  # input
-    groundtruth_org = [20,13,23,44]  # label
+    inputs_org = [-1, 0, 1]  # input
+    groundtruth_org = [20, 13, 23, 44]  # label
 
-    network = BPNetwork(nInput=len(inputs_org), nHidden=10, nOutput=len(groundtruth_org), lr=0.001)
+    network = BPNetwork(nInput=len(inputs_org),
+                        nHidden=10,
+                        nOutput=len(groundtruth_org),
+                        lr=0.001)
 
     epoch = 0
-    epoch_list=[]
-    loss_list=[]
+    epoch_list = []
+    loss_list = []
     while (1):
         network.train(inputs_org, groundtruth_org)
         out = network.inference(inputs_org)
@@ -90,20 +91,18 @@ if __name__ == "__main__":
                 epoch, "  -- out: %8f %8f %8f %8f" %
                 (out[0][0], out[1][0], out[2][0], out[3][0]), "\t-- loss: ",
                 (loss))
-        
-        epoch += 1        
+
+        epoch += 1
         if (loss < 1e-5):
             break
-        
 
     print(" ------  Train result ------")
-    print("  epoch ",epoch)
-    print("  loss ",loss_list[-1])
+    print("  epoch ", epoch)
+    print("  loss ", loss_list[-1])
     out = network.inference(inputs_org)
-    print("  out   %8f %8f %8f %8f" %(out[0][0], out[1][0], out[2][0], out[3][0]))
+    print("  out   %8f %8f %8f %8f" %
+          (out[0][0], out[1][0], out[2][0], out[3][0]))
 
-    from matplotlib import pyplot as plt 
-    plt.plot(epoch_list,loss_list) 
+    from matplotlib import pyplot as plt
+    plt.plot(epoch_list, loss_list)
     plt.show()
-
-    
